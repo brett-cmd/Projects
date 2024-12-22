@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  wg-easy:
+    network_mode: host
+    environment:
+      # Required: Your VPN server's public hostname or IP.
+      WG_HOST: ddns.brett-nelson.com
+
+      # Optional:
+      PASSWORD: "changeme" # Web UI password.
+      WG_PORT: "51820" # Public UDP port.
+      WG_DEFAULT_ADDRESS: "10.1.1.0/24" # VPN address range for clients.
+      WG_DEFAULT_DNS: "1.1.1.1" # If you have an internal DNS server on this subnet.
+      WG_ALLOWED_IPS: "0.0.0.0/0" # Only route this subnet through the VPN.
+
+    image: weejewel/wg-easy
+    container_name: wg-easy
+    volumes:
+      - /home/ubuntu/docker/wireguard:/etc/wireguard
+    ports:
+      - "51820:51820/udp" # VPN port.
+      - "51821:51821/tcp" # Web UI port.
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1

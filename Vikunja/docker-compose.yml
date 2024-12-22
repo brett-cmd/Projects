@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  vikunja:
+    image: vikunja/vikunja
+    environment:
+      VIKUNJA_SERVICE_PUBLICURL: https://vikunja.local.brett-nelson.com
+      VIKUNJA_DATABASE_HOST: db:3306
+      VIKUNJA_DATABASE_PASSWORD: "Fcsy34UO!27"
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: brett
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_SERVICE_JWTSECRET: "dskfj23kkjsdkjsdfjkl3sdfgfsdfhsdfkh3ozxpqzx"
+    volumes:
+      - ./files:/app/vikunja/files
+    networks:
+      - proxy
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vikunja.entrypoints=http"
+      - "traefik.http.routers.vikunja.rule=Host(`vikunja.local.brett-nelson.com`)"
+      - "traefik.http.middlewares.vikunja-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.vikunja.middlewares=vikunja-https-redirect"
+      - "traefik.http.routers.vikunja-secure.entrypoints=https"
+      - "traefik.http.routers.vikunja-secure.rule=Host(`vikunja.local.brett-nelson.com`)"
+      - "traefik.http.routers.vikunja-secure.tls=true"
+      - "traefik.http.routers.vikunja-secure.service=vikunja"
+      - "traefik.http.services.vikunja.loadbalancer.server.port=3456"
+      - "traefik.docker.network=proxy"
+
+  db:
+    image: mariadb:10
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: "supersupersecret"
+      MYSQL_USER: brett
+      MYSQL_PASSWORD: "Fcsy34UO!27"
+      MYSQL_DATABASE: vikunja
+    networks:
+      - proxy
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u brett --password=Fcsy34UO!27"]
+      interval: 2s
+      start_period: 30s
+
+networks:
+  proxy:
+    external: true

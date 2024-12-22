@@ -1,0 +1,155 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+
+- Networking:
+    - PiHole:
+        icon: pi-hole.png
+        href: "http://pihole.local.brett-nelson.com/admin"
+        description: DNS Server
+        widget:
+          type: pihole
+          url: http://10.27.27.10
+          version: 6 # required if running v6 or higher, defaults to 5
+          key: 44260f02cf6eddc4b9646bbcbbe56e1eaf3336780aa9cdd39e1fef11c7747704 # optional
+
+    - NextDNS:
+        icon: nextdns.png
+        href: "https://my.nextdns.io/a12c6b/setup"
+        description: Mobile DNS Server
+
+    - Opnsense:
+        icon: opnsense.png
+        href: "https://opnsense.local.brett-nelson.com"
+        description: Firewall
+#        widget:
+#          type: opnsense
+#          url: http://10.27.27.1
+#          username: qxLFwhsFJAtA9fc0jLICOX7SZcCWoWS/gOgpGPVRkpGX+XAWmF+A9vrz9XEYnyjYVz5d6Z4ZDave24yL
+#          password: r+HulVNQU+YvqY6tZFaGsUGJGrAjZdhD+2kLFHInQQHxjyiGJWst/QWdhcFp9Hkh1jU452K/C4VCP6xV
+#          wan: opt1
+
+    - Unifi:
+        icon: ubiquiti.png
+        href: "https://unifi.local.brett-nelson.com:8443"
+        description: Ubiquiti Unifi
+
+    - Netbird:
+        icon: netbird.png
+        href: "https://app.netbird.io/peers"
+        description: Mesh VPN
+
+- Homelab:
+    - Proxmox:
+        icon: proxmox.png
+        href: "https://proxmox.local.brett-nelson.com:8006"
+        description: Virtualization Host
+
+    - Traefik:
+        icon: traefik.png
+        href: "http://traefik-dashboard.local.brett-nelson.com"
+        description: Reverse Proxy
+#        server: docker
+#        container: traefik
+#        widget:
+#          type: traefik
+#          url: https://10.27.27.51
+#          username: admin # optional
+#          password: admin # optional
+
+    - Portainer:
+        icon: portainer.png
+        href: "https://portainer.local.brett-nelson.com/"
+        description: Container Manager
+
+    - Asustor:
+        icon: alist.png
+        href: "https://asustor.local.brett-nelson.com:8001"
+        description: Asustor NAS
+
+    - Authentik:
+        icon: authentik.png
+        href: "https://authentik.local.brett-nelson.com"
+        description: Authentik SSO provider
+
+    - Vikunja:
+        icon: vikunja.png
+        href: "https://vikunja.local.brett-nelson.com"
+        description: To-do/Projects app
+
+    - Paperless:
+        icon: paperless.png
+        href: "https://paperless.local.brett-nelson.com"
+        description: PDF and document management
+
+- Monitoring:
+    - LibreNMS:
+        icon: librespeed.png
+        href: "https://librenms.local.brett-nelson.com"
+        description: Network SNMP monitoring
+
+    - Grafana:
+        icon: grafana.png
+        href: "https://grafana.local.brett-nelson.com"
+        description: Docker Container Monitoring
+
+    - InfluxDB:
+        icon: influxdb.png
+        href: "http://10.27.27.51:8086"
+        description: DB Data for Grafana
+
+    - Ntopng:
+        icon: nocodb.png
+        href: "https://10.27.27.1:3090"
+        description: Traffic Monitoring Tool
+
+    - Crowdsec:
+        icon: crowdsec.png
+        href: "https://app.crowdsec.net/alerts"
+        description: Crowdsec Alerts
+
+- Other:
+    - Gmail:
+        icon: gmail.png
+        href: "https://www.gmail.com"
+        description: brett.nlson@gmail.com
+
+    - icloud:
+        icon: apple.png
+        href: "https://www.icloud.com"
+        description: nelson.brett@protonmail.com
+
+    - Proton mail:
+        icon: proton-mail.png
+        href: "https://mail.proton.me"
+        description: nelson.brett@protonmail.com
+
+    - Proton drive:
+        icon: proton-drive.png
+        href: "https://drive.proton.me"
+        description: Encrypted Cloud Storage
+
+    - Utoronto Mail:
+        icon: microsoft.png
+        href: "https://outlook.office365.com/mail/"
+        description: Utoroto Email
+
+    - ChatGPT:
+        icon: chatgpt.png
+        href: "https://chatgpt.com/"
+        description: Chat GPT
+
+    - Entra Portal:
+        icon: microsoft.png
+        href: "https://entra.microsoft.com"
+        description: Microsoft Entra Portal
+
+    - Intune Portal:
+        icon: microsoft.png
+        href: "https://intune.microsoft.com"
+        description: Microsoft intune portal
+
+    - Microsoft Admin Portal:
+        icon: microsoft.png
+        href: "https://admin.microsoft.com"
+        description: Microsoft Admin Portal

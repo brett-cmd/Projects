@@ -1,0 +1,57 @@
+version: "3.3"
+
+services:
+  backup:
+    image: mazzolino/restic
+    container_name: restic
+    hostname: your_host_name
+    environment:
+      RUN_ON_STARTUP: "true" #change as you wish
+      BACKUP_CRON: "0 */12 * * *" #this is twice daily, i.e., every 12 hours
+      RESTIC_REPOSITORY: /restic
+      RESTIC_PASSWORD: changeme
+      RESTIC_BACKUP_SOURCES: /mnt/volumes
+      RESTIC_COMPRESSION: auto
+      RESTIC_BACKUP_ARGS: >-
+        --tag restic-asustor #add tags, whatever you need to mark backups
+        --verbose
+      RESTIC_FORGET_ARGS: >- #change as required
+        --keep-last 10
+        --keep-daily 7
+        --keep-weekly 5
+        --keep-monthly 12
+      TZ: Europe/London
+    volumes:
+      - /mnt/asustor/docker_backup:/restic #Change the following to a local or remote device of your choice. This is where backups will reside
+      - /mnt/asustor/docker_restore:/tmp-for-restore #Use this location for restoration -- Can read each container
+      - /home/docker:/mnt/volumes:ro #Location of your Docker files on your local disk
+    security_opt:
+      - no-new-privileges:true
+
+  prune:
+    image: mazzolino/restic
+    container_name: restic-prune
+    hostname: your_host_name
+    environment:
+      RUN_ON_STARTUP: "true"
+      PRUNE_CRON: "0 0 4 * * *"
+      RESTIC_REPOSITORY: /restic
+      RESTIC_PASSWORD: changeme
+      TZ: Europe/London
+    security_opt:
+      - no-new-privileges:true
+
+  check:
+    image: mazzolino/restic
+    container_name: restic-check
+    hostname: your_host_name
+    environment:
+      RUN_ON_STARTUP: "false"
+      CHECK_CRON: "0 15 5 * * *"
+      RESTIC_CHECK_ARGS: >-
+        --read-data-subset=10%
+      RESTIC_REPOSITORY: /restic
+      RESTIC_PASSWORD: changeme
+      TZ: Europe/London
+    security_opt:
+      - no-new-privileges:true
