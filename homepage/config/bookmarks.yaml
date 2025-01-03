@@ -1,0 +1,43 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/bookmarks
+
+- Developer:
+    - Github:
+        - abbr: GH
+          href: https://github.com/
+
+    - ChatGPT:
+        - abbr: GP
+          href: https://chatgpt.com
+
+    - Jims Garage Github:
+        - abbr: JG
+          href: https://github.com/JamesTurland/JimsGarage
+
+    - Homepage Config:
+        - abbr: HP
+          href: https://gethomepage.dev/configs/
+
+    - Homepage Icons:
+        - abbr: HI
+          href: https://selfh.st/icons/
+
+- Social:
+    - Reddit:
+        - abbr: RE
+          href: https://reddit.com/
+
+- Entertainment:
+    - YouTube:
+        - abbr: YT
+          href: https://youtube.com/
+
+    - Jims Garage:
+        - abbr: JG
+          href: https://www.youtube.com/@Jims-Garage/videos
+
+    -  Techno Tim:
+        - abbr: TT
+          href: https://www.youtube.com/@TechnoTim/videos
+

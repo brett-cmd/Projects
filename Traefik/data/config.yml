@@ -1,0 +1,169 @@
+http:
+  # region middlewares
+  middlewares:
+    authentik:
+      forwardAuth:
+        address: http://authentik_server:9000/outpost.goauthentik.io/auth/traefik
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version
+
+    addprefix-pihole:
+      addPrefix:
+        prefix: "/admin"
+
+    https-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    redirectregex-pihole:
+      redirectRegex:
+        regex: "/admin/(.*)"
+        replacement: "/"
+
+    default-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/8"
+          - "192.168.0.0/16"
+          - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+          - default-whitelist
+          - default-headers
+  # endregion
+
+  # region routers
+  routers:
+    proxmox:
+      entryPoints:
+        - "https"
+      rule: "Host(`proxmox.local.brett-nelson.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - authentik
+      tls: {}
+      service: proxmox
+
+    pihole:
+      entryPoints:
+        - "http"
+      rule: "Host(`pihole.local.brett-nelson.com`)"
+      middlewares:
+        - redirectregex-pihole
+        - default-headers
+        - addprefix-pihole
+        - https-redirectscheme
+        - authentik
+      tls: {}
+      service: pihole
+
+    opnsense:
+      entryPoints:
+        - "https"
+      rule: "Host(`opnsense.local.brett-nelson.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - authentik
+      tls: {}
+      service: opnsense
+
+    librenms:
+      entryPoints:
+        - "https"
+      rule: "Host(`librenms.local.brett-nelson.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+      tls: {}
+      service: librenms
+
+    syncthing:
+      entryPoints:
+        - "https"
+      rule: "Host(`unifi.local.brett-nelson.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - authentik
+      tls: {}
+      service: unifi
+
+    truenas:
+      entryPoints:
+        - "https"
+      rule: "Host(`asustor.local.brett-nelson.com`)"
+      middlewares:
+        - default-headers
+        - https-redirectscheme
+        - authentik
+      tls: {}
+      service: asustor
+  # endregion
+
+  # region services
+  services:
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://10.27.27.88:8006"
+        passHostHeader: true
+
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://10.27.27.10"
+        passHostHeader: true
+
+    opnsense:
+      loadBalancer:
+        servers:
+          - url: "https://10.27.27.1"
+        passHostHeader: true
+
+    librenms:
+      loadBalancer:
+        servers:
+          - url: "http://10.27.27.51:8000"
+        passHostHeader: true
+
+    unifi:
+      loadBalancer:
+        servers:
+          - url: "https://10.27.27.10:8443"
+        passHostHeader: true
+
+    asustor:
+      loadBalancer:
+        servers:
+          - url: "https://10.27.27.53:8001"
+        passHostHeader: true
+  # endregion

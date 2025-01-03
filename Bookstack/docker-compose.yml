@@ -1,0 +1,64 @@
+version: "3.4"
+
+services:
+  # MariaDB Service
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MYSQL_ROOT_PASSWORD= #enter a root password
+      - MYSQL_DATABASE= # Optional: Replace with your desired database name
+      - MYSQL_USER=        # Optional: Replace with your desired username
+      - MYSQL_PASSWORD= # Optional: Replace with your desired password
+ #    - REMOTE_SQL=http://URL1/your.sql,https://URL2/your.sql # Optional: Replace with your SQL scripts URLs
+    volumes:
+      - /home/docker/mariadb/data:/config
+    # Removed ports to keep MariaDB internal
+    restart: unless-stopped
+    networks:
+      - internal
+
+  # Bookstack Service
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: bookstack
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - APP_URL=https://bookstack.local.brett-nelson.com
+      - APP_KEY= #generate with docker run -it --rm --entrypoint /bin/bash lscr.io/linuxserver/bookstack:latest appkey
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=brett
+      - DB_PASSWORD= #enter a password
+      - DB_DATABASE=bookstack
+      - QUEUE_CONNECTION= # Optional: Define if using queues (e.g., redis, database)
+    volumes:
+      - /home/docker/bookstack/data:/config
+    restart: unless-stopped
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.bookstack.entrypoints=http"
+      - "traefik.http.routers.bookstack.rule=Host(`bookstack.local.brett-nelson.com`)"
+      - "traefik.http.middlewares.bookstack-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.bookstack.middlewares=bookstack-https-redirect"
+      - "traefik.http.routers.bookstack-secure.entrypoints=https"
+      - "traefik.http.routers.bookstack-secure.rule=Host(`bookstack.local.brett-nelson.com`)"
+      - "traefik.http.routers.bookstack-secure.tls=true"
+      - "traefik.http.routers.bookstack-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.bookstack-secure.service=bookstack"
+      - "traefik.http.services.bookstack.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
+  internal:
+    driver: bridge

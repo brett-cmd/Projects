@@ -1,0 +1,40 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/widgets
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    cputemp: true
+    tempmin: 0 # optional, minimum cpu temp
+    tempmax: 100 # optional, maximum cpu temp
+    uptime: true
+    units: imperial # only used by cpu temp, options: 'imperial' or 'metric'
+    refresh: 3000 # optional, in ms
+    diskUnits: bytes # optional, bytes (default) or bbytes. Only applies to disk
+    network: true # optional, uses 'default' if true or specify a network interface name
+
+- search:
+    provider: google
+    target: _blank
+
+- openmeteo:
+    label: Toronto
+    latitude: 43.6532
+    longitude: -79.3832
+    timezone: America/Toronto
+    units: metric
+    cache: 5
+    format:
+      maximumFractionDigits: 1
+
+- datetime:
+    text_size: xl
+    locale: nl
+    format:
+        dateStyle: short
+        timeStyle: short
+        hour12: true
+
+
